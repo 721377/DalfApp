@@ -134,7 +134,7 @@ class _ProductsPageState extends State<ProductsPage> {
       }
     } catch (error) {
       print('Error fetching categories: $error');
-      // Show an error message to the user
+  
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to load categories. Please try again later.'),
@@ -168,9 +168,9 @@ class _ProductsPageState extends State<ProductsPage> {
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(height: 10),
+            SizedBox(height: 28),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 13),
               child: Row(
                 children: [
                   IconButton(
@@ -190,9 +190,10 @@ class _ProductsPageState extends State<ProductsPage> {
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 248, 248, 248),
                         borderRadius: BorderRadius.circular(30),
+                        border: Border.all(color: Color.fromARGB(255, 225, 225, 225)),
                         boxShadow: [
                           BoxShadow(
-                            color: Color.fromRGBO(0, 0, 0, 0.082),
+                            color: Color.fromRGBO(0, 0, 0, 0.046),
                             blurRadius: 12,
                             spreadRadius: 0,
                             offset: Offset(0, 4),

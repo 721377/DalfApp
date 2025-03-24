@@ -16,11 +16,10 @@ class HomeAppBar extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(
-                  255, 8, 8, 8), // Moved inside BoxDecoration
+              color: const Color(0xFF1C304E), // Moved inside BoxDecoration
               boxShadow: [
                 BoxShadow(
-                  color: const Color.fromARGB(19, 0, 0, 0),
+                  color: const Color.fromARGB(33, 0, 0, 0),
                   blurRadius: 10,
                   spreadRadius: 2,
                   offset: Offset(0, 5),

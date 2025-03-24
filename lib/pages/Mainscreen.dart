@@ -1,4 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dalfapp/pages/Procedtopay.dart';
+import 'package:dalfapp/pages/Register.dart';
 import 'package:flutter/material.dart';
 import '../widgets/Bottomnavbar.dart'; // Import your custom bottom bar
 import 'HomePage.dart'; // Import your pages
@@ -6,6 +8,7 @@ import 'ProductAll.dart';
 import 'PromotionPage.dart';
 import 'ProfilePage.dart';
 import 'Login.dart'; 
+import 'Register.dart';
 import 'Welcomepage.dart';
 import 'package:flutter/services.dart'; // Ensure you have this imported
 
@@ -32,9 +35,12 @@ class _MainScreenState extends State<MainScreen> {
         category: _selectedCategory, // Pass the selected category to ProductsPage
       ),
       PromotionPage(),
-      // LoginRegisterScreen(),
+      // LoginScreen(),
+      // RegisterScreen(),
+      // LoginPage(),
+      CheckoutPage(),
       // ProfilePage(),
-      WelcomePage(),
+      // WelcomePage(),
     ];
   }
 
@@ -85,9 +91,9 @@ class _MainScreenState extends State<MainScreen> {
     checkInternetConnection(context);
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        statusBarColor: Colors.black,
+        statusBarColor: Color(0xFF1C304E),
         statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Color.fromARGB(255, 240, 240, 240), // Set navigation bar color
+        systemNavigationBarColor: Color.fromARGB(255, 255, 255, 255), // Set navigation bar color
         systemNavigationBarIconBrightness: Brightness.dark, // Set icon color
       ),
     );
@@ -102,20 +108,24 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: const Color.fromARGB(0, 255, 255, 255),
       // Use IndexedStack to maintain the state of each page
-      body: IndexedStack(
+      body: 
+      IndexedStack(
         index: _currentIndex,
         children: _pages, // Use the _pages list here
       ),
 
       // Custom bottom navigation bar
-      bottomNavigationBar: Padding(
+      bottomNavigationBar:
+         Padding(
         padding: const EdgeInsets.only(bottom: 12.0, left: 8.0, right: 8.0),
         child: ModernBottomBar(
           currentIndex: _currentIndex,
           onTap: _onTabTapped,
         ),
       ),
+    
     );
   }
 }

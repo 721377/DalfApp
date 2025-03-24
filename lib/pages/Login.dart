@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,229 +11,157 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginRegisterScreen(),
+      home: LoginScreen(),
     );
   }
 }
 
-class LoginRegisterScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  _LoginRegisterScreenState createState() => _LoginRegisterScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginRegisterScreenState extends State<LoginRegisterScreen> {
-  bool isRegistering = false;
-
-  void toggleRegister() {
-    setState(() {
-      isRegistering = !isRegistering;
-    });
-  }
+class _LoginScreenState extends State<LoginScreen> {
+  bool _obscurePassword = true; // Track password visibility
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Background Image with Overlay
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('images/Dalf_carne/butcherimgWr.jpg'),
-                fit: BoxFit.cover,
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {},
               ),
-            ),
-            child: Container(
-              color: const Color.fromARGB(206, 0, 0, 0), // Reduced opacity to 0.5
-            ),
-          ),
-
-          // Logo Fixed at the Top
-          SafeArea(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20),
+              const SizedBox(height: 20),
+              Center(
                 child: Image.asset(
                   'images/Dalf_carne/logo.png',
-                  width: 150,
-                  height: 150,
+                  height: 90,
                 ),
               ),
-            ),
-          ),
-
-          // Login Form
-          if (!isRegistering)
-            Center(
-              child: SingleChildScrollView(
-                child: Column(
+              const SizedBox(height: 25),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Indirizzo Email',
+                  labelStyle: const TextStyle(
+                    color: Color(0xFF1C304E), // Label color
+                  ),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFF1C304E), // Focused border color
+                      width: 2.0,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                obscureText: _obscurePassword,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  labelStyle: const TextStyle(
+                    color: Color(0xFF1C304E), // Label color
+                  ),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFF1C304E), // Focused border color
+                      width: 2.0,
+                    ),
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      color: const Color(0xFF1C304E), // Icon color
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: true,
+                        onChanged: (value) {},
+                        activeColor: Colors.black,
+                      ),
+                      const Text(
+                        'Ricordami',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ],
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'Password dimenticata?',
+                      style: TextStyle(
+                        color: Color(0xFF1C304E),
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    'Accedi',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 200), // Space for the logo
-                    _buildLoginForm(),
-                    const SizedBox(height: 20),
+                    const Text(
+                      "Non hai un account? ",
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
                     TextButton(
-                      onPressed: toggleRegister,
-                      child: Text(
-                        "Don't have an account? Register",
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 14,
+                      onPressed: () {},
+                      child: const Text(
+                        'Registrati',
+                        style: TextStyle(
+                          color: Color(0xFF1C304E),
+                          fontStyle: FontStyle.italic,
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-
-          // Register Box (Slides Up)
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-            bottom: isRegistering ? 0 : -MediaQuery.of(context).size.height,
-            left: 0,
-            right: 0,
-            child: _buildRegisterForm(),
+            ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLoginForm() {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.9,
-      padding: const EdgeInsets.all(20),
-      decoration: _boxDecoration(),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text("Login", style: _titleStyle()),
-          const SizedBox(height: 20),
-          _buildTextField(Icons.email, "Email"),
-          const SizedBox(height: 15),
-          _buildTextField(Icons.lock, "Password", isPassword: true),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {},
-            style: _buttonStyle(primary: Colors.black),
-            child: const Text("Login"),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRegisterForm() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text("Register", style: _titleStyle(color: Colors.black)),
-            const SizedBox(height: 20),
-            _buildTextField(Icons.person, "Full Name"),
-            const SizedBox(height: 15),
-            _buildTextField(Icons.email, "Email"),
-            const SizedBox(height: 15),
-            _buildTextField(Icons.phone, "Phone Number"),
-            const SizedBox(height: 15),
-            _buildTextField(Icons.location_on, "Address"),
-            const SizedBox(height: 15),
-            _buildTextField(Icons.lock, "Password", isPassword: true),
-            const SizedBox(height: 15),
-            _buildTextField(Icons.lock, "Confirm Password", isPassword: true),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {},
-              style: _buttonStyle(primary: Colors.black),
-              child: const Text("Register"),
-            ),
-            const SizedBox(height: 10),
-            TextButton(
-              onPressed: toggleRegister,
-              child: Text(
-                "Already have an account? Login",
-                style: GoogleFonts.poppins(color: Colors.black, fontSize: 14),
-              ),
-            ),
-          ],
         ),
       ),
-    );
-  }
-
-  Widget _buildTextField(IconData icon, String hint, {bool isPassword = false}) {
-    return TextField(
-      obscureText: isPassword,
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: const Color(0xFF1C304C)),
-        hintText: hint,
-        hintStyle: GoogleFonts.poppins(color: const Color(0xFF1C304C).withOpacity(0.7)),
-        filled: true,
-        fillColor: Colors.grey[100],
-        border: _inputBorder(),
-        enabledBorder: _inputBorder(borderColor: Colors.grey[300]!),
-        focusedBorder: _inputBorder(borderColor: const Color(0xFF1C304C)),
-      ),
-    );
-  }
-
-  OutlineInputBorder _inputBorder({Color borderColor = Colors.grey}) {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: BorderSide(color: borderColor, width: 1),
-    );
-  }
-
-  ButtonStyle _buttonStyle({Color primary = Colors.white}) {
-    return ElevatedButton.styleFrom(
-      backgroundColor: primary,
-      foregroundColor: Colors.white,
-      minimumSize: const Size(double.infinity, 50),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      shadowColor: Colors.black26,
-      elevation: 5,
-    );
-  }
-
-  BoxDecoration _boxDecoration() {
-    return BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.1),
-          blurRadius: 10,
-          spreadRadius: 2,
-        ),
-      ],
-    );
-  }
-
-  TextStyle _titleStyle({Color color = Colors.white}) {
-    return GoogleFonts.poppins(
-      fontSize: 24,
-      fontWeight: FontWeight.bold,
-      color: color,
     );
   }
 }

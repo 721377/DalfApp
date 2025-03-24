@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart'; // Add this import
 import '../providers/cart_provider.dart'; // Import your CartProvider
 import '../models/CartModel.dart'; // Import your CartModel
-import '../pages/Cart.dart'; 
+import '../pages/Cart.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:cached_network_image/cached_network_image.dart';// Import your CartPage
+import 'package:cached_network_image/cached_network_image.dart'; // Import your CartPage
 
 class ProductDetailPage extends StatefulWidget {
   final Map<String, dynamic> product;
@@ -17,7 +17,7 @@ class ProductDetailPage extends StatefulWidget {
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
-  String selectedWeight = '250g'; // Default weight selection
+  String selectedWeight = '500g'; // Default weight selection
   TextEditingController customWeightController = TextEditingController();
   bool isCustomWeightSelected = false;
   bool isDescriptionExpanded = false;
@@ -56,10 +56,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.45,
                       width: double.infinity,
-                      color: Colors.white, // Background color for shimmer effect
+                      color:
+                          Colors.white, // Background color for shimmer effect
                     ),
                   ),
-                  errorWidget: (context, url, error) => Icon(Icons.error, size: 50), // Error widget
+                  errorWidget: (context, url, error) =>
+                      Icon(Icons.error, size: 50), // Error widget
                 ),
               ),
             ),
@@ -273,7 +275,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    widget.product["desLong"] = widget.product["desLong"]?.replaceAll(RegExp(r'<\/?p>'), ''),
+                    widget.product["desLong"] = widget.product["desLong"]
+                        ?.replaceAll(RegExp(r'<\/?p>'), ''),
                     style: TextStyle(fontSize: 16, color: Colors.black54),
                     maxLines: isDescriptionExpanded ? null : 3,
                     overflow: isDescriptionExpanded
@@ -291,14 +294,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                       decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: const Color.fromARGB(255, 196, 196, 196),
                         borderRadius: BorderRadius.circular(22),
                       ),
                       child: Text(
                         isDescriptionExpanded ? "Mostra meno" : "Mostra di più",
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.white,
+                          color: const Color.fromARGB(255, 72, 72, 72),
                         ),
                       ),
                     ),
@@ -327,7 +330,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               offset: Offset(0, 3),
             ),
           ],
-          border: Border.all(color: Color.fromARGB(255, 235, 235, 235)),
+          border: Border(
+            top: BorderSide(color: Color.fromARGB(255, 235, 235, 235)),
+            left: BorderSide(color: Color.fromARGB(255, 235, 235, 235)),
+            right: BorderSide(color: Color.fromARGB(255, 235, 235, 235)),
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -344,7 +351,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   name: widget.product["name"],
                   image: widget.product["image"],
                   price: double.parse(widget.product["price"]),
-                  iva : double.parse(widget.product["iva"]),
+                  iva: double.parse(widget.product["iva"]),
                   weight: weight,
                 );
                 cartProvider.addToCart(cartItem); // Add to cart
@@ -355,7 +362,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    backgroundColor: Colors.white,
+                    backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                     elevation: 8, // Light shadow for a floating effect
                     content: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -395,19 +402,19 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 children: [
                   Container(
                     padding: EdgeInsets.symmetric(
-                        horizontal: cartProvider.cartItems.isNotEmpty ? 18 : 38,
+                        horizontal: cartProvider.cartItems.isNotEmpty ? 18 : 65,
                         vertical: 18),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(25),
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.black,
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.shopping_cart, color: Colors.black),
+                        Icon(Icons.shopping_cart, color: const Color.fromARGB(255, 255, 255, 255)),
                         SizedBox(width: 10),
                         Text(
                           "Aggiungi nel carrello",
-                          style: TextStyle(fontSize: 16, color: Colors.black),
+                          style: TextStyle(fontSize: 16, color: const Color.fromARGB(255, 255, 255, 255)),
                         ),
                       ],
                     ),
@@ -452,12 +459,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 21, vertical: 18),
                   decoration: BoxDecoration(
-                    color: Color(0xFF060505),
-                    borderRadius: BorderRadius.circular(25),
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    border: Border.all(color: Colors.black),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                   child: Text(
                     "Carrello",
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(fontSize: 16, color: const Color.fromARGB(255, 0, 0, 0)),
                   ),
                 ),
               ),

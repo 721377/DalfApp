@@ -17,13 +17,9 @@ class ModernBottomBar extends StatefulWidget {
 class _ModernBottomBarState extends State<ModernBottomBar> {
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      left: 32, // Add padding from the left side
-      right: 32, // Add padding from the right side
-      bottom: 32, // Add padding from the bottom
-      child: Container(
+    return  Container(
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 0, 0, 0), // White background
+          color: const Color(0xFF1C304E), // White background
           borderRadius: BorderRadius.circular(30), // Rounded corners
           boxShadow: [
             BoxShadow(
@@ -90,23 +86,23 @@ class _ModernBottomBarState extends State<ModernBottomBar> {
             ],
           ),
         ),
-      ),
-    );
+      );
+  
   }
 
   // Helper function to get the icon for the current index
   Widget _getIconForIndex(int index) {
     switch (index) {
       case 0:
-        return const Icon(Icons.home, color: Colors.black, size: 30);
+        return const Icon(Icons.home, color: Color(0xFF1C304E), size: 30);
       case 1:
-        return const Icon(Icons.search, color: Colors.black, size: 30);
+        return const Icon(Icons.search, color: Color(0xFF1C304E), size: 30);
       case 2:
-        return const Icon(Icons.discount_outlined, color: Colors.black, size: 30);
+        return const Icon(Icons.discount_outlined, color: Color(0xFF1C304E), size: 30);
       case 3:
-        return const Icon(Icons.account_circle, color: Colors.black, size: 30);
+        return const Icon(Icons.account_circle, color: Color(0xFF1C304E), size: 30);
       default:
-        return const Icon(Icons.home, color: Colors.black, size: 30);
+        return const Icon(Icons.home, color: Color(0xFF1C304E), size: 30);
     }
   }
 }
