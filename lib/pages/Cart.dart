@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dalfapp/pages/Mainscreen.dart';
+import 'package:dalfapp/pages/Procedtopay.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -12,17 +13,16 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  double get shipping => 5.00; // Fixed shipping cost
 
   @override
   Widget build(BuildContext context) {
-    final cartProvider = Provider.of<CartProvider>(context); // Access CartProvider
+    final cartProvider =
+        Provider.of<CartProvider>(context); // Access CartProvider
     final cartItems = cartProvider.cartItems; // Get cart items from provider
 
     double cartiva = cartProvider.ivaPrice; // Calculate subtotal
     double subtotal = cartProvider.totalPrice - cartiva;
     double tot = cartProvider.totalPrice;
-    double total = subtotal + shipping; // Calculate total
 
     return Scaffold(
       body: SafeArea(
@@ -50,7 +50,8 @@ class _CartPageState extends State<CartPage> {
                   Stack(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.shopping_bag_outlined, color: Colors.black, size: 30),
+                        icon: Icon(Icons.shopping_bag_outlined,
+                            color: Colors.black, size: 30),
                         onPressed: () {
                           // Handle cart icon action
                         },
@@ -90,16 +91,19 @@ class _CartPageState extends State<CartPage> {
                       ? Expanded(
                           child: SingleChildScrollView(
                             child: Column(
-                              children: List.generate(cartItems.length, (index) {
+                              children:
+                                  List.generate(cartItems.length, (index) {
                                 final item = cartItems[index];
 
                                 // Remove item when quantity is 0
                                 if (item.quantity == 0) {
-                                  cartProvider.removeFromCart(index); // Automatically remove item
+                                  cartProvider.removeFromCart(
+                                      index); // Automatically remove item
                                 }
 
                                 return Dismissible(
-                                  key: Key(item.id.toString()), // Use a unique key (e.g., item.id)
+                                  key: Key(item.id
+                                      .toString()), // Use a unique key (e.g., item.id)
                                   direction: DismissDirection.endToStart,
                                   background: Container(
                                     alignment: Alignment.centerRight,
@@ -108,10 +112,12 @@ class _CartPageState extends State<CartPage> {
                                       color: Colors.red,
                                       borderRadius: BorderRadius.circular(20),
                                     ),
-                                    child: Icon(Icons.delete, color: Colors.white),
+                                    child:
+                                        Icon(Icons.delete, color: Colors.white),
                                   ),
                                   onDismissed: (direction) {
-                                    cartProvider.removeFromCart(index); // Remove item from cart
+                                    cartProvider.removeFromCart(
+                                        index); // Remove item from cart
                                   },
                                   child: Container(
                                     margin: EdgeInsets.only(bottom: 10),
@@ -134,23 +140,29 @@ class _CartPageState extends State<CartPage> {
                                           width: 90,
                                           height: 90,
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(20),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                           ),
                                           child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(20),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                             child: CachedNetworkImage(
                                               imageUrl: item.image,
-                                              fit: BoxFit.cover,
-                                              placeholder: (context, url) => Shimmer.fromColors(
+                                              fit: BoxFit.fill,
+                                              placeholder: (context, url) =>
+                                                  Shimmer.fromColors(
                                                 baseColor: Colors.grey[300]!,
-                                                highlightColor: Colors.grey[100]!,
+                                                highlightColor:
+                                                    Colors.grey[100]!,
                                                 child: Container(
                                                   width: 90,
                                                   height: 90,
                                                   color: Colors.white,
                                                 ),
                                               ),
-                                              errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
+                                              errorWidget: (context, url,
+                                                      error) =>
+                                                  Icon(Icons.error, size: 40),
                                             ),
                                           ),
                                         ),
@@ -160,7 +172,8 @@ class _CartPageState extends State<CartPage> {
                                         // 📌 Product Name and Price + Quantity
                                         Expanded(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 item.name,
@@ -184,19 +197,29 @@ class _CartPageState extends State<CartPage> {
                                               Row(
                                                 children: [
                                                   IconButton(
-                                                    icon: Icon(Icons.remove_circle, color: Colors.black, size: 28),
+                                                    icon: Icon(
+                                                        Icons.remove_circle,
+                                                        color: Colors.black,
+                                                        size: 28),
                                                     onPressed: () {
-                                                      cartProvider.decreaseQuantity(index); // Decrease quantity
+                                                      cartProvider.decreaseQuantity(
+                                                          index); // Decrease quantity
                                                     },
                                                   ),
                                                   Text(
                                                     item.quantity.toString(),
-                                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold),
                                                   ),
                                                   IconButton(
-                                                    icon: Icon(Icons.add_circle, color: Colors.black, size: 28),
+                                                    icon: Icon(Icons.add_circle,
+                                                        color: Colors.black,
+                                                        size: 28),
                                                     onPressed: () {
-                                                      cartProvider.increaseQuantity(index); // Increase quantity
+                                                      cartProvider.increaseQuantity(
+                                                          index); // Increase quantity
                                                     },
                                                   ),
                                                 ],
@@ -206,18 +229,28 @@ class _CartPageState extends State<CartPage> {
                                         ),
                                         // 📏 Weight on the far right of the row
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
                                           children: [
                                             // Display the weight
                                             Text(
                                               "Peso: ${item.weight}",
                                               style: TextStyle(
-                                                fontSize: 14,
+                                                fontSize: 15,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black54,
                                               ),
                                             ),
                                             SizedBox(height: 5),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              "€${item.weightPrezzo}",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ],
@@ -236,7 +269,7 @@ class _CartPageState extends State<CartPage> {
                               Image.asset(
                                 'images/Dalf_carne/emptyCart.jpg',
                                 height: 430,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fill,
                               ),
                               SizedBox(height: 10),
                               Text(
@@ -254,7 +287,8 @@ class _CartPageState extends State<CartPage> {
                   if (cartItems.isNotEmpty)
                     // 📌 Bottom Fixed Section
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
@@ -277,11 +311,13 @@ class _CartPageState extends State<CartPage> {
                             children: [
                               Text(
                                 "Subtotale",
-                                style: TextStyle(fontSize: 16, color: Colors.black54),
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.black54),
                               ),
                               Text(
                                 "€${subtotal.toStringAsFixed(2)}",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -291,11 +327,13 @@ class _CartPageState extends State<CartPage> {
                             children: [
                               Text(
                                 "IVA",
-                                style: TextStyle(fontSize: 16, color: Colors.black54),
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.black54),
                               ),
                               Text(
                                 "€${cartiva.toStringAsFixed(2)}",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -305,28 +343,16 @@ class _CartPageState extends State<CartPage> {
                             children: [
                               Text(
                                 "Totale",
-                                style: TextStyle(fontSize: 16, color: Colors.black54),
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.black54),
                               ),
                               Text(
                                 "€${tot.toStringAsFixed(2)}",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                             ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Spedizione",
-                                style: TextStyle(fontSize: 16, color: Colors.black54),
-                              ),
-                              Text(
-                                "€${shipping.toStringAsFixed(2)}",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
+                          ),      
                           SizedBox(height: 10),
                           Divider(
                             color: Colors.black54,
@@ -338,11 +364,13 @@ class _CartPageState extends State<CartPage> {
                             children: [
                               Text(
                                 "Totale",
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                "€${total.toStringAsFixed(2)}",
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                "€${tot.toStringAsFixed(2)}",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -351,7 +379,11 @@ class _CartPageState extends State<CartPage> {
                           // 🛒 Checkout Button
                           GestureDetector(
                             onTap: () {
-                              // Handle checkout action
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CheckoutPage()),
+                              );
                             },
                             child: Container(
                               width: double.infinity,
@@ -364,9 +396,9 @@ class _CartPageState extends State<CartPage> {
                                 child: Text(
                                   "Procedi con l'ordine",
                                   style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),

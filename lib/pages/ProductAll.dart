@@ -378,7 +378,7 @@ class _ProductsPageState extends State<ProductsPage> {
 
   Widget productBox(Map<String, dynamic> product, bool isWeb) {
     return Container(
-      margin: EdgeInsets.all(5),
+      margin: EdgeInsets.all(3),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -400,14 +400,14 @@ class _ProductsPageState extends State<ProductsPage> {
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
             child: CachedNetworkImage(
               imageUrl: product["image"],
-              height: isWeb ? 180 : 140, // Adjust height for web
+              height: isWeb ? 180 : 145, // Adjust height for web
               width: double.infinity,
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
               placeholder: (context, url) => Shimmer.fromColors(
                 baseColor: Colors.grey[300]!,
                 highlightColor: Colors.grey[100]!,
                 child: Container(
-                  height: isWeb ? 180 : 140, // Adjust height for web
+                  height: isWeb ? 180 : 145, // Adjust height for web
                   width: double.infinity,
                   color: Colors.white,
                 ),
@@ -445,7 +445,7 @@ class _ProductsPageState extends State<ProductsPage> {
                   height: 30,
                   width: 30,
                   decoration: BoxDecoration(
-                      color: Colors.black, shape: BoxShape.circle),
+                      color: Color(0xFF1C304C), shape: BoxShape.circle),
                   child: Icon(Icons.add, color: Colors.white, size: 20),
                 ),
               ],

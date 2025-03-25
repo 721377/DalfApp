@@ -54,7 +54,7 @@ class CartProvider with ChangeNotifier {
 
   // Get total price of cart
   double get totalPrice {
-    return _cartItems.fold(0, (sum, item) => sum + (item.price * item.quantity));
+    return _cartItems.fold(0, (sum, item) => sum + (item.weightPrezzo * item.quantity));
   }
   double get ivaPrice{
        return _cartItems.fold(0, (sum, item) => sum + (item.iva));

@@ -8,8 +8,7 @@ import 'package:dalfapp/widgets/BannerSlider.dart'; // Ensure this import is cor
 import 'package:shimmer/shimmer.dart';
 import 'package:http/http.dart' as http;
 import 'package:dalfapp/settings/settings.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/services.dart'; // Import for SystemChrome
+import 'package:cached_network_image/cached_network_image.dart';// Import for SystemChrome
 
 class HomePage extends StatefulWidget {
   final Function(String? category) onCategorySelected;
@@ -284,9 +283,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             top: 0,
             left: 0,
             right: 0,
-            child: SafeArea(
-              child: HomeAppBar(),
-            ),
+            child: 
+               HomeAppBar(),
+            
           ),
         ],
       ),
@@ -477,7 +476,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               imageUrl: product["image"],
               height: 190,
               width: isWeb ? 280 : 210, // Adjust width for web
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
               placeholder: (context, url) => Shimmer.fromColors(
                 baseColor: Colors.grey[300]!,
                 highlightColor: Colors.grey[100]!,
@@ -524,7 +523,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 height: 35, // Increased size for add button
                 width: 35, // Increased size for add button
                 decoration: BoxDecoration(
-                    color: Color(0xFF060505), shape: BoxShape.circle),
+                    color: Color(0xFF1C304C), shape: BoxShape.circle),
                 child: Center(
                   child: Icon(Icons.add, color: Colors.white, size: 20),
                 ),

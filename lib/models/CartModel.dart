@@ -5,6 +5,7 @@ class Cart {
   final double price;
   final double iva ;
   final String weight;
+  final double weightPrezzo;
   int quantity; // Quantity field
 
   Cart({
@@ -14,6 +15,7 @@ class Cart {
     required this.price,
     required this.iva,
     required this.weight,
+    required this.weightPrezzo,
     this.quantity = 1, // Default quantity is 1
   });
 
@@ -26,6 +28,7 @@ class Cart {
       'price': price,
       'iva': iva,
       'weight': weight,
+      'weightPrezzo' : weightPrezzo,
       'quantity': quantity,
     };
   }
@@ -38,7 +41,8 @@ class Cart {
       image: json['image'], // Added missing field
       price: (json['price'] as num).toDouble(), 
       iva: (json['iva'] as num).toDouble(),// Ensures price is double
-      weight: json['weight'], // Added missing field
+      weight: json['weight'],
+      weightPrezzo:json['weightPrezzo'],// Added missing field
       quantity: json['quantity'] ?? 1, // Default to 1 if missing
     );
   }

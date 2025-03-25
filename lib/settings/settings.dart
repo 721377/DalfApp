@@ -11,8 +11,15 @@ class Settings {
   static const String categories = '$apiBaseUrl/routes.php?action=cate';
   static const String login = '$apiBaseUrl/routes.php?action=login';
   static const String register = '$apiBaseUrl/routes.php?action=register';
-
+  static const String  updateUser = '$apiBaseUrl/routes.php?action=updateuser';
 
   static const int maxRetryAttempts = 3;
   static const Duration apiTimeout = Duration(seconds: 10);
+  
+ static const String alias = "ALIAS_WEB_00090690";
+  static const String secretKey = "IQ7CDB50XANRHHT0M4AL4DZP3X4MUBOT";
+  static const String group = "GRP_184527";
+  static const String paymentUrl = "https://int-ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet";
+  static const String terminalId = "00090691";
+ 
 }
