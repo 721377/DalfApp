@@ -432,6 +432,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
                     final cartItem = Cart(
                       id: widget.product["id"]?.toString() ?? '',
+                      codart: widget.product['codart'].toString() ,
                       name: widget.product["name"]?.toString() ?? 'No name',
                       image: widget.product["image"]?.toString() ?? '',
                       price:double.parse(widget.product["price"]) ,

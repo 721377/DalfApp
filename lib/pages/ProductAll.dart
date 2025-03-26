@@ -87,6 +87,7 @@ class _ProductsPageState extends State<ProductsPage> {
         for (var product in data) {
           fetchedProducts.add({
             "id": product["id"].toString(),
+            "codart":product['cod'].toString(),
             "name": product["des"] ?? "No Name",
             "price": double.tryParse(product["prezzo"]?.toString() ?? "0.00")?.toStringAsFixed(2) ?? "0.00",
             "iva": double.tryParse(product["iva"]?.toString() ?? "0.00")?.toStringAsFixed(2) ?? "0.00",

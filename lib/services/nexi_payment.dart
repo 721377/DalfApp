@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
+import 'package:dalfapp/settings/settings.dart';
 import 'package:http/http.dart' as http;
 
 class NexiPaymentService {
@@ -12,14 +13,13 @@ class NexiPaymentService {
     required double amount,
   }) async {
     // Nexi Credentials
-    String alias = "ALIAS_WEB_00090690";
-    String key = "IQ7CDB50XANRHHT0M4AL4DZP3X4MUBOT";
+    String key = Settings.secretKey;
     String currency = "EUR";
     String transactionId = "LIVEPS_${DateTime.now().millisecondsSinceEpoch}";
 
     // Prepare Request Data
     Map<String, String> requestBody = {
-      "alias": alias,
+      "alias": Settings.alias,
       "importo": (amount * 100).toInt().toString(), // Convert to cents
       "divisa": currency,
       "numero": cardNumber,

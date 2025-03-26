@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dalfapp/services/GeneraOrder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../providers/cart_provider.dart';
 import '../pages/Cart.dart';
+import '../services/nexi_payment.dart';
 
 class CheckoutPage extends StatefulWidget {
   const CheckoutPage({super.key});
@@ -41,7 +43,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   void initState() {
     super.initState();
     _loadUserData();
-    
+
     // Add listeners to controllers
     _fullNameController.addListener(_checkForChanges);
     _phoneController.addListener(_checkForChanges);
@@ -71,7 +73,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final userDataString = prefs.getString('userData');
-    
+
     if (userDataString != null) {
       final userData = json.decode(userDataString);
       setState(() {
@@ -81,7 +83,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         _addressController.text = userData['address'] ?? '';
         _cityController.text = userData['city'] ?? '';
         _capController.text = userData['cap'] ?? '';
-        
+
         // Store original data for comparison
         _originalUserData = {
           'fullname': userData['fullname'] ?? '',
@@ -98,15 +100,19 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   void _checkForChanges() {
     if (!mounted) return;
-    
-    final hasChanged = 
-      _fullNameController.text.trim() != (_originalUserData['fullname'] ?? '').trim() ||
-      _phoneController.text.trim() != (_originalUserData['phone'] ?? '').trim() ||
-      _emailController.text.trim() != (_originalUserData['email'] ?? '').trim() ||
-      _addressController.text.trim() != (_originalUserData['address'] ?? '').trim() ||
-      _cityController.text.trim() != (_originalUserData['city'] ?? '').trim() ||
-      _capController.text.trim() != (_originalUserData['cap'] ?? '').trim();
-    
+
+    final hasChanged = _fullNameController.text.trim() !=
+            (_originalUserData['fullname'] ?? '').trim() ||
+        _phoneController.text.trim() !=
+            (_originalUserData['phone'] ?? '').trim() ||
+        _emailController.text.trim() !=
+            (_originalUserData['email'] ?? '').trim() ||
+        _addressController.text.trim() !=
+            (_originalUserData['address'] ?? '').trim() ||
+        _cityController.text.trim() !=
+            (_originalUserData['city'] ?? '').trim() ||
+        _capController.text.trim() != (_originalUserData['cap'] ?? '').trim();
+
     if (_isDataModified != hasChanged) {
       setState(() => _isDataModified = hasChanged);
     }
@@ -116,10 +122,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
     if (_formKey.currentState?.validate() ?? false) {
       final prefs = await SharedPreferences.getInstance();
       final userDataString = prefs.getString('userData');
-      
+
       if (userDataString != null) {
         final userData = json.decode(userDataString);
-        
+
         // Update only changed fields
         final updatedData = {
           ...userData,
@@ -130,9 +136,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
           'city': _cityController.text,
           'cap': _capController.text,
         };
-        
+
         await prefs.setString('userData', json.encode(updatedData));
-        
+
         // Update original data
         setState(() {
           _originalUserData = {
@@ -145,7 +151,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           };
           _isDataModified = false;
         });
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Dati aggiornati con successo!')),
         );
@@ -156,7 +162,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
   void _processPayment() {
     if (_formKey.currentState?.validate() ?? false) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Pagamento con $_selectedPaymentMethod completato!')),
+        SnackBar(
+            content: Text('Pagamento con $_selectedPaymentMethod completato!')),
       );
     }
   }
@@ -169,19 +176,27 @@ class _CheckoutPageState extends State<CheckoutPage> {
         key: _formKey,
         child: Column(
           children: [
-            _buildTextField(_fullNameController, 'Nome Completo', Icons.person, true),
+            _buildTextField(
+                _fullNameController, 'Nome Completo', Icons.person, true),
             const SizedBox(height: 15),
-            _buildTextField(_phoneController, 'Numero di Telefono', Icons.phone, true),
+            _buildTextField(
+                _phoneController, 'Numero di Telefono', Icons.phone, true),
             const SizedBox(height: 15),
-            _buildTextField(_emailController, 'Indirizzo Email', Icons.email, true),
+            _buildTextField(
+                _emailController, 'Indirizzo Email', Icons.email, true),
             const SizedBox(height: 15),
-            _buildTextField(_addressController, 'Indirizzo', Icons.location_on, true),
+            _buildTextField(
+                _addressController, 'Indirizzo', Icons.location_on, true),
             const SizedBox(height: 15),
             Row(
               children: [
-                Expanded(child: _buildTextField(_cityController, 'Città', Icons.location_city, true)),
+                Expanded(
+                    child: _buildTextField(
+                        _cityController, 'Città', Icons.location_city, true)),
                 const SizedBox(width: 10),
-                Expanded(child: _buildTextField(_capController, 'CAP', Icons.map, true)),
+                Expanded(
+                    child: _buildTextField(
+                        _capController, 'CAP', Icons.map, true)),
               ],
             ),
             const SizedBox(height: 25),
@@ -199,10 +214,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
         children: [
           Text(
             'Metodo di Pagamento',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey[800]),
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800]),
           ),
           const SizedBox(height: 20),
-          
+
           // Credit Card Option
           _buildPaymentOption(
             'Carta di Credito',
@@ -211,7 +229,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
             'credit_card',
           ),
           const SizedBox(height: 15),
-          
+
           // PayPal Option
           _buildPaymentOption(
             'PayPal',
@@ -220,7 +238,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
             'paypal',
           ),
           const SizedBox(height: 25),
-          
+
           // Payment Forms
           if (_selectedPaymentMethod == 'credit_card') _buildCreditCardForm(),
           if (_selectedPaymentMethod == 'paypal') _buildPaypalForm(),
@@ -229,7 +247,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
     );
   }
 
-  Widget _buildPaymentOption(String title, String subtitle, IconData icon, String value) {
+  Widget _buildPaymentOption(
+      String title, String subtitle, IconData icon, String value) {
     return GestureDetector(
       onTap: () => setState(() => _selectedPaymentMethod = value),
       child: Container(
@@ -238,7 +257,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: _selectedPaymentMethod == value ? const Color(0xFF1C304E) : Colors.grey[300]!,
+            color: _selectedPaymentMethod == value
+                ? const Color(0xFF1C304E)
+                : Colors.grey[300]!,
             width: _selectedPaymentMethod == value ? 2 : 1,
           ),
         ),
@@ -248,32 +269,36 @@ class _CheckoutPageState extends State<CheckoutPage> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: _selectedPaymentMethod == value 
-                  ? const Color(0xFF1C304E).withOpacity(0.1) 
-                  : Colors.grey[100],
+                color: _selectedPaymentMethod == value
+                    ? const Color(0xFF1C304E).withOpacity(0.1)
+                    : Colors.grey[100],
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(icon, color: _selectedPaymentMethod == value 
-                ? const Color(0xFF1C304E) 
-                : Colors.grey[600]),
+              child: Icon(icon,
+                  color: _selectedPaymentMethod == value
+                      ? const Color(0xFF1C304E)
+                      : Colors.grey[600]),
             ),
             const SizedBox(width: 15),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  Text(subtitle, style: TextStyle(fontSize: 13, color: Colors.grey[600])),
+                  Text(title,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text(subtitle,
+                      style: TextStyle(fontSize: 13, color: Colors.grey[600])),
                 ],
               ),
             ),
             Icon(
-              _selectedPaymentMethod == value 
-                ? Icons.radio_button_checked 
-                : Icons.radio_button_off,
-              color: _selectedPaymentMethod == value 
-                ? const Color(0xFF1C304E) 
-                : Colors.grey,
+              _selectedPaymentMethod == value
+                  ? Icons.radio_button_checked
+                  : Icons.radio_button_off,
+              color: _selectedPaymentMethod == value
+                  ? const Color(0xFF1C304E)
+                  : Colors.grey,
             ),
           ],
         ),
@@ -284,22 +309,26 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Widget _buildCreditCardForm() {
     return Column(
       children: [
-        _buildTextField(_cardNumberController, 'Numero Carta', Icons.credit_card, true,
-          keyboardType: TextInputType.number, hintText: '1234 5678 9012 3456'),
+        _buildTextField(
+            _cardNumberController, 'Numero Carta', Icons.credit_card, true,
+            keyboardType: TextInputType.number,
+            hintText: '1234 5678 9012 3456'),
         const SizedBox(height: 15),
-        _buildTextField(_cardNameController, 'Nome sulla Carta', Icons.person_outline, true,
-          hintText: 'MARIO ROSSI'),
+        _buildTextField(
+            _cardNameController, 'Nome sulla Carta', Icons.person_outline, true,
+            hintText: 'MARIO ROSSI'),
         const SizedBox(height: 15),
         Row(
           children: [
             Expanded(
-              child: _buildTextField(_expiryDateController, 'Scadenza', Icons.calendar_today, true,
-                hintText: 'MM/AA', keyboardType: TextInputType.datetime),
+              child: _buildTextField(
+                  _expiryDateController, 'Scadenza', Icons.calendar_today, true,
+                  hintText: 'MM/AA', keyboardType: TextInputType.datetime),
             ),
             const SizedBox(width: 15),
             Expanded(
               child: _buildTextField(_cvvController, 'CVV', Icons.lock, true,
-                hintText: '123', keyboardType: TextInputType.number),
+                  hintText: '123', keyboardType: TextInputType.number),
             ),
           ],
         ),
@@ -310,8 +339,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Widget _buildPaypalForm() {
     return Column(
       children: [
-        _buildTextField(_paypalEmailController, 'Email PayPal', Icons.email, true,
-          keyboardType: TextInputType.emailAddress, hintText: 'mario.rossi@example.com'),
+        _buildTextField(
+            _paypalEmailController, 'Email PayPal', Icons.email, true,
+            keyboardType: TextInputType.emailAddress,
+            hintText: 'mario.rossi@example.com'),
         const SizedBox(height: 20),
         Container(
           padding: const EdgeInsets.all(15),
@@ -391,20 +422,22 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.chevron_right, size: 24),
-                  onPressed: () => Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => CartPage())),
+                  onPressed: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CartPage())),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 12),
-          
+
           // Price breakdown
           _buildPriceRow('Subtotale:', '€${subtotal.toStringAsFixed(2)}'),
           const SizedBox(height: 6),
-          _buildPriceRow('Spedizione:', '€${_shippingPrice.toStringAsFixed(2)}'),
+          _buildPriceRow(
+              'Spedizione:', '€${_shippingPrice.toStringAsFixed(2)}'),
           const SizedBox(height: 6),
-          _buildPriceRow('IVA:', '€${cartProvider.ivaPrice.toStringAsFixed(2)}'),
+          _buildPriceRow(
+              'IVA:', '€${cartProvider.ivaPrice.toStringAsFixed(2)}'),
           const Divider(height: 16, thickness: 1),
           _buildPriceRow(
             'Totale:',
@@ -412,21 +445,30 @@ class _CheckoutPageState extends State<CheckoutPage> {
             isTotal: true,
           ),
           const SizedBox(height: 12),
-          
+
           // Dynamic action button
           SizedBox(
             width: double.infinity,
             height: 56,
             child: ElevatedButton(
-              onPressed: _currentStep == 0 && _isDataModified
-                  ? _updateUserData
-                  : _currentStep == 0
-                      ? () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            setState(() => _currentStep = 1);
-                          }
-                        }
-                      : _processPayment,
+              onPressed: () async {
+                if (_currentStep == 0) {
+                  if (_isDataModified) {
+                    await _updateUserData(); // Ensure the update completes
+                  }
+
+                  if (_formKey.currentState?.validate() ?? false) {
+                    setState(() => _currentStep = 1);
+
+                    // Ensure async call for the payment process only after validation
+                    // Handle payment result
+                  }
+                } else {
+                  // Step 2: Process Payment
+                  await placeOrder();
+                  // Handle payment result
+                }
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF1C304E),
                 shape: RoundedRectangleBorder(
@@ -435,9 +477,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               child: Text(
                 _currentStep == 0
-                    ? _isDataModified
+                    ? (_isDataModified
                         ? 'SALVA MODIFICHE'
-                        : 'PROCEDI AL PAGAMENTO'
+                        : 'PROCEDI AL PAGAMENTO')
                     : 'PAGA ORA',
                 style: const TextStyle(
                   color: Colors.white,
@@ -461,7 +503,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
           style: TextStyle(
             fontSize: isTotal ? 16 : 14,
             fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-            color: isTotal ? const Color.fromARGB(255, 12, 12, 12) : Colors.grey[600],
+            color: isTotal
+                ? const Color.fromARGB(255, 12, 12, 12)
+                : Colors.grey[600],
           ),
         ),
         Text(
@@ -488,6 +532,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       controller: controller,
       enabled: enabled,
       keyboardType: keyboardType,
+      maxLength: hintText == 'MM/AA' ? 5 : null, // Limit for expiry field
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText,
@@ -503,9 +548,20 @@ class _CheckoutPageState extends State<CheckoutPage> {
         filled: true,
         fillColor: enabled ? Colors.white : Colors.grey[100],
         prefixIcon: Icon(icon, color: Colors.grey[600], size: 22),
-        contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        counterText: '',
       ),
-      validator: (value) => value?.isEmpty ?? true ? 'Campo obbligatorio' : null,
+      onChanged: (value) {
+        if (hintText == 'MM/AA' && value.length == 2 && !value.contains('/')) {
+          controller.text = '$value/';
+          controller.selection = TextSelection.fromPosition(
+            TextPosition(offset: controller.text.length),
+          );
+        }
+      },
+      validator: (value) =>
+          value?.isEmpty ?? true ? 'Campo obbligatorio' : null,
     );
   }
 
@@ -519,7 +575,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: _currentStep == stepNumber ? const Color(0xFF1C304E) : Colors.grey[200],
+          color: _currentStep == stepNumber
+              ? const Color(0xFF1C304E)
+              : Colors.grey[200],
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
@@ -558,7 +616,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 ],
               ),
             ),
-            
+
             // Main content area
             Expanded(
               child: IndexedStack(
@@ -569,7 +627,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 ],
               ),
             ),
-            
+
             // Order summary
             Consumer<CartProvider>(
               builder: (context, cartProvider, child) {

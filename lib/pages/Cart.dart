@@ -269,7 +269,7 @@ class _CartPageState extends State<CartPage> {
                               Image.asset(
                                 'images/Dalf_carne/emptyCart.jpg',
                                 height: 430,
-                                fit: BoxFit.fill,
+                                fit: BoxFit.cover,
                               ),
                               SizedBox(height: 10),
                               Text(

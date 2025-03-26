@@ -3,38 +3,70 @@ import 'package:http/http.dart' as http;
 import 'package:dalfapp/settings/settings.dart';
 
 void main() async {
-  // Test data to send to the register API
+  // Test data for order API - matches your backend expectations
   final Map<String, dynamic> requestData = {
-    'fullname': 'John Doe',
-    'email': 'johndoe@example.com',
-    'password': 'securepassword123',
-    'address': '123 Main St',
-    'cap': '12345',
-    'phone': '555-5555',
-    'city': 'Rome',
+    'cart_items': [
+      {
+        'id': 1,
+        'codart': '1004',
+        'name': 'FILETTO BOVINO ADULTO',
+        'price': 25.90,
+        'iva':2.59,
+        'weight': 0.5,
+        'weightPrezzo': 0,
+        'quantity': 1,
+      }
+    ],
+    'cpc': '632', // Test client code
+    'payment_method': 'cash', // Test payment method
+    'shipping_address_id': 'main', // Default shipping address
+    'notes': 'Test order from API tester',
+    'request_invoice': {
+      'requested': true,
+      'type': 'cliente', // or 'azienda'
+    },
   };
 
   try {
-    // Make the POST request with the API token in the headers and send test data
+    print('Sending test order to: ${Settings.sendOrder}');
+    print('Request data: ${json.encode(requestData)}');
+
+    // Make the POST request
     final response = await http.post(
-      Uri.parse(Settings.getProduct),
+      Uri.parse(Settings.sendOrder),
       headers: {
         "Content-Type": "application/json",
-        "X-API-TOKEN": Settings.apiToken, // Include the API token in the headers
+        "X-API-TOKEN": Settings.apiToken,
       },
-      body: json.encode(requestData), // Encode the request data to JSON format
+      body: json.encode(requestData),
     );
 
-    print('Response Status Code: ${response.statusCode}');
+    print('\nResponse Status Code: ${response.statusCode}');
     print('Response Body: ${response.body}');
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      print('Parsed Data: $data');
+      
+      if (data['status']) {
+        print('\n✅ Order created successfully!');
+        print('Order Number: ${data['data']['order_number']}');
+        print('Total Amount: ${data['data']['total_net']}');
+        if (data['data'] != null) {
+          print('Products number : ${data['data']['items_count']}');
+        }
+      } else {
+        print('\n❌ Order failed: ${data['msg']}');
+      }
     } else {
-      print('Failed to load data');
+      print('\n❌ HTTP Error: ${response.statusCode}');
+      try {
+        final errorData = json.decode(response.body);
+        print('Error details: ${errorData['message'] ?? errorData['error']}');
+      } catch (e) {
+        print('Could not parse error response');
+      }
     }
   } catch (error) {
-    print('Error: $error');
+    print('\n❌ Exception occurred: $error');
   }
 }

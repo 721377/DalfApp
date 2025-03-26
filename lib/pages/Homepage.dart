@@ -105,6 +105,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         for (var product in data) {
           fetchedProducts.add({
             "id": product["id"].toString(),
+            "codart":product['cod'].toString(),
             "name": product["des"] ?? "No Name",
             "price": double.tryParse(product["prezzo"]?.toString() ?? "0.00")
                     ?.toStringAsFixed(2) ??
