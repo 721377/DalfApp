@@ -465,7 +465,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   }
                 } else {
                   // Step 2: Process Payment
-                  await placeOrder();
+                  await OrderService.sendOrder(paymentMethod: 'test');
                   // Handle payment result
                 }
               },
