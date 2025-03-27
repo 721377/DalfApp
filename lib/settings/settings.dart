@@ -2,7 +2,7 @@
 
 class Settings {
   // API Configuration
-  static const String apiBaseUrl = 'http://192.168.0.8/sviluppo/mohamed/web_dalfcarni/api';
+  static const String apiBaseUrl = 'http://demo2.prowebsuite.com/api';
   static const String apiToken = "dd37e8604b471bf5df12dafdac61672416ff5e8d6a3575435758fc8709d6d626";
 
   // API Endpoints

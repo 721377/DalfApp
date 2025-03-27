@@ -5,9 +5,9 @@ import '../models/CartModel.dart';
 
 class CartProvider with ChangeNotifier {
   List<Cart> _cartItems = [];
-
   List<Cart> get cartItems => _cartItems;
-    final String apiUrl = "";
+  final String apiUrl = "";
+
   CartProvider() {
     _loadCart(); // Load cart when the provider is initialized
   }
@@ -18,8 +18,7 @@ class CartProvider with ChangeNotifier {
 
     if (index != -1) {
       _cartItems[index].quantity += cart.quantity;
-    } 
-    else {
+    } else {
       _cartItems.add(cart);
     }
 
@@ -47,7 +46,7 @@ class CartProvider with ChangeNotifier {
       _cartItems[index].quantity--;
       await _saveCart();
       notifyListeners();
-    }else if (_cartItems[index].quantity == 1){
+    } else if (_cartItems[index].quantity == 1) {
       removeFromCart(index);
     }
   }
@@ -56,8 +55,49 @@ class CartProvider with ChangeNotifier {
   double get totalPrice {
     return _cartItems.fold(0, (sum, item) => sum + (item.weightPrezzo * item.quantity));
   }
-  double get ivaPrice{
-       return _cartItems.fold(0, (sum, item) => sum + (item.iva));
+
+  double get ivaPrice {
+    return _cartItems.fold(0, (sum, item) => sum + (item.iva));
+  }
+
+  // Update cart items based on codart with new product data
+  void updateCartItems(List<Map<String, dynamic>> products) {
+    bool hasChanges = false;
+    
+    for (int i = 0; i < _cartItems.length; i++) {
+      final cartItem = _cartItems[i];
+      final product = products.firstWhere(
+        (p) => p['codart'] == cartItem.codart,
+        orElse: () => {},
+      );
+
+      if (product.isNotEmpty) {
+        // Check if any properties need updating
+        if (cartItem.name != product['name'] ||
+            cartItem.price != double.parse(product['price']) ||
+            cartItem.iva != double.parse(product['iva']) ||
+            cartItem.image != product['image']) {
+          
+          _cartItems[i] = Cart(
+            id: cartItem.id,
+            codart: cartItem.codart,
+            name: product['name'],
+            image: product['image'],
+            price: double.parse(product['price']),
+            iva: double.parse(product['iva']),
+            weight: cartItem.weight,
+            weightPrezzo: cartItem.weightPrezzo,
+            quantity: cartItem.quantity,
+          );
+          hasChanges = true;
+        }
+      }
+    }
+
+    if (hasChanges) {
+      _saveCart();
+      notifyListeners();
+    }
   }
 
   // Save cart to local storage with timestamp

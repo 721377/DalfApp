@@ -446,7 +446,7 @@ class _ProductsPageState extends State<ProductsPage> {
                   height: 30,
                   width: 30,
                   decoration: BoxDecoration(
-                      color: Color(0xFF1C304C), shape: BoxShape.circle),
+                      color: Colors.black, shape: BoxShape.circle),
                   child: Icon(Icons.add, color: Colors.white, size: 20),
                 ),
               ],

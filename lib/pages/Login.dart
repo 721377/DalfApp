@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (responseData['user'] != null) {
         prefs.setString('userData', json.encode(responseData['user']));
       }
-      if(responseData['status'] == 'success'){
+      if(responseData['status']){
       // showCustomSnackBar(
       //     context: context,
       //     message: json.decode(response.body)['message'],

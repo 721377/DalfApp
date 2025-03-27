@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:dalfapp/widgets/CustomSnackbar.dart';
 import 'package:flutter/material.dart';
@@ -29,70 +30,88 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
 
-  Future<void> _registerUser() async {
-    if (!_formKey.currentState!.validate()) return;
-    if (_passwordController.text != _confirmPasswordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Le password non corrispondono')),
-      );
-      return;
-    }
+Future<void> _registerUser() async {
+  if (!_formKey.currentState!.validate()) return;
+  if (_passwordController.text != _confirmPasswordController.text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Le password non corrispondono')),
+    );
+    return;
+  }
 
-    setState(() => _isLoading = true);
+  setState(() => _isLoading = true);
 
-    try {
+  try {
+    final response = await http.post(
+      Uri.parse(Settings.register),
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-TOKEN": Settings.apiToken,
+      },
+      body: json.encode({
+        'fullname': _fullNameController.text.trim(),
+        'email': _emailController.text.trim(),
+        'password': _passwordController.text,
+        'address': _AddressController.text.trim(),
+        'cap': _capController.text.trim(),
+        'phone': _phoneController.text.trim(),
+        'city': _cityController.text.trim(),
+      }),
+    ).timeout(const Duration(seconds: 30));
+
+    final responseData = json.decode(response.body);
+    // ignore: avoid_print
+    print(response.body);
+    if (response.statusCode == 200 && responseData['status'] == true) {
+      // Save to SharedPreferences only after successful server registration
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isRegistered', true);
-      await prefs.setString('fullName', _fullNameController.text);
-      await prefs.setString('phone', _phoneController.text);
-      await prefs.setString('email', _emailController.text);
-      await prefs.setString('city', _cityController.text);
-      await prefs.setString('cap', _capController.text);
-      await prefs.setString('password', _passwordController.text);
-
-      final response = await http
-          .post(
-            Uri.parse(Settings.register),
-            headers: {
-              "Content-Type": "application/json",
-              "X-API-TOKEN": Settings.apiToken,
-            },
-            body: json.encode({
-              'fullname': _fullNameController.text,
-              'address': _AddressController.text,
-              'phone': _phoneController.text,
-              'email': _emailController.text,
-              'city': _cityController.text,
-              'cap': _capController.text,
-              'password': _passwordController.text,
-            }),
-          )
-          .timeout(const Duration(seconds: 30));
-
-      if (response.statusCode == 200) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-        );
-        showCustomSnackBar(
-          context: context,
-          message: "Registrazione completata con successo!",
-          type: SnackBarType.success,
-        );
-      } else {
-        final error =
-            json.decode(response.body)['message'] ?? 'Errore sconosciuto';
-        showCustomSnackBar(
-            context: context, message: error, type: SnackBarType.error);
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Errore di connessione: ${e.toString()}')),
+      await prefs.setString('email', _emailController.text.trim());
+      // Don't store password in plaintext!
+      
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       );
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
+      showCustomSnackBar(
+        context: context,
+        message: responseData['message'] ?? 'Registrazione completata',
+        type: SnackBarType.success,
+      );
+    } 
+    else if (response.statusCode == 409) {
+      // User already exists
+      showCustomSnackBar(
+        context: context,
+        message: 'Email già registrata',
+        type: SnackBarType.error,
+      );
     }
+    else {
+      // Other server errors
+      showCustomSnackBar(
+        context: context,
+        message: responseData['message'] ?? 'Errore del server',
+        type: SnackBarType.error,
+      );
+    }
+  } on TimeoutException {
+    showCustomSnackBar(
+      context: context,
+      message: 'Timeout. Riprova più tardi',
+      type: SnackBarType.error,
+    );
+  } catch (e) {
+    showCustomSnackBar(
+      context: context,
+      message: 'Errore di connessione',
+      type: SnackBarType.error,
+    );
+    debugPrint('Error: $e');
+  } finally {
+    if (mounted) setState(() => _isLoading = false);
   }
+}
 
   @override
   Widget build(BuildContext context) {

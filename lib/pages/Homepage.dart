@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:dalfapp/pages/ProductAll.dart';
+import 'package:dalfapp/providers/cart_provider.dart';
 import 'package:dalfapp/widgets/Categories.dart';
 import 'package:flutter/material.dart';
 import 'package:dalfapp/widgets/HomeAppBar.dart';
 import 'package:dalfapp/pages/ProductDetail.dart';
 import 'package:dalfapp/widgets/BannerSlider.dart'; // Ensure this import is correct
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:http/http.dart' as http;
 import 'package:dalfapp/settings/settings.dart';
@@ -118,7 +120,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             "category": product["catdescrizione"] ?? "Unknown",
           });
         }
-
+      final cartProvider = Provider.of<CartProvider>(context, listen: false);
+      cartProvider.updateCartItems(fetchedProducts);
         setState(() {
           products = fetchedProducts;
         });
@@ -524,7 +527,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 height: 35, // Increased size for add button
                 width: 35, // Increased size for add button
                 decoration: BoxDecoration(
-                    color: Color(0xFF1C304C), shape: BoxShape.circle),
+                    color: Colors.black, shape: BoxShape.circle),
                 child: Center(
                   child: Icon(Icons.add, color: Colors.white, size: 20),
                 ),

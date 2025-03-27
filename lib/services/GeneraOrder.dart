@@ -12,7 +12,7 @@ class OrderService {
   Future<Map<String, dynamic>> sendOrder({
     String? notes,
     String? shippingAddressId = 'main',
-    required String paymentMethod, // Make payment method required
+    required String paymentMethod,
   }) async {
     try {
       // Get user data from shared preferences
@@ -49,7 +49,7 @@ class OrderService {
       final requestBody = {
         'cart_items': cartItems,
         'cpc': cpc,
-        'payment_method': paymentMethod, // Now using the required parameter
+        'payment_method': paymentMethod,
         'shipping_address_id': shippingAddressId,
         'notes': notes ?? '',
       };
@@ -68,19 +68,18 @@ class OrderService {
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         
-        // Assuming your PHP returns JSON with 'status' and 'data' fields
-        if (responseData['status'] == 'ok') {
+        if (responseData['status']) {
           await cartProvider.clearCart();
           return {
             'success': true,
-            'order_number': responseData['nmov'] ?? '',
-            'total': responseData['tot'] ?? 0,
+            'order_number': responseData['data']['order_number'] ?? '',
+            'total': responseData['data']['payment_cost'] ?? 0,
             'message': 'Order placed successfully',
           };
         } else {
           return {
             'success': false,
-            'error': responseData['msg'] ?? 'Failed to place order',
+            'error': responseData['message'] ?? 'Failed to place order',
           };
         }
       } else {

@@ -1,4 +1,6 @@
 import 'package:dalfapp/pages/Login.dart';
+import 'package:dalfapp/settings/settings.dart';
+import 'package:dalfapp/widgets/CustomSnackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -86,16 +88,21 @@ class _ProfilePageState extends State<ProfilePage> {
       // Only call API if there are changes
       if (updatedFields.isNotEmpty) {
         // Call your API to update user data
-        final response = await http.put(
-          Uri.parse('https://your-api-endpoint.com/users/update'),
-          headers: {'Content-Type': 'application/json'},
+        final response = await http.post(
+          Uri.parse(Settings.updateUser),
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-TOKEN": Settings.apiToken,
+          },
           body: json.encode({
-            'userId': userData['cpc'],
+            'cpc': userData['cpc'],
             'updates': updatedFields,
           }),
         );
-
-        if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        // ignore: avoid_print
+        print(response.body);
+        if (response.statusCode == 200 && responseData['status']) {
           // Update local storage with new data
           final SharedPreferences prefs = await SharedPreferences.getInstance();
           final updatedUserData = {...userData, ...updatedFields};
@@ -105,12 +112,15 @@ class _ProfilePageState extends State<ProfilePage> {
             userData = updatedUserData;
             isEditing = false;
           });
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Profilo aggiornato con successo')),
-          );
+          showCustomSnackBar(
+              context: context,
+              message: 'Profilo aggiornato con successo',
+              type: SnackBarType.success);
         } else {
-          throw Exception('Failed to update profile');
+          showCustomSnackBar(
+              context: context,
+              message: responseData['message'],
+              type: SnackBarType.error);
         }
       } else {
         setState(() {
@@ -118,11 +128,13 @@ class _ProfilePageState extends State<ProfilePage> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-                'Errore durante l\'aggiornamento del profilo: ${e.toString()}')),
-      );
+      showCustomSnackBar(
+          context: context,
+          message:
+              'Errore durante l\'aggiornamento del profilo: ${e.toString()}',
+          type: SnackBarType.error);
+      // ignore: avoid_print
+      print('Errore durante l\'aggiornamento del profilo: ${e.toString()}');
     } finally {
       setState(() {
         isLoading = false;
