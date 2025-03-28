@@ -3,24 +3,32 @@ import 'package:http/http.dart' as http;
 import 'package:dalfapp/settings/settings.dart';
 
 void main() async {
-  // Test data for registration API - matches your backend expectations
+  // Test data for email testing API - matches your backend expectations
   final Map<String, dynamic> requestData = {
-    'fullname': 'Mario Rossi',
-    'email': 'm.labideone@gmail.com',
-    'password': 'Test1234!',
-    'address': 'Via Roma 123',
-    'cap': '00100',
-    'phone': '3331234567',
-    'city': 'Roma'
+    'cpc': '633', // Customer code
+    'cart_items': [
+      {
+        'name': 'Test Product 1',
+        'codart': 'PROD001',
+        'weight': 2,
+        'price': 10.99
+      },
+      {
+        'name': 'Test Product 2',
+        'codart': 'PROD002',
+        'weight': 1,
+        'price': 24.50
+      }
+    ]
   };
 
   try {
-    print('Sending test registration to: ${Settings.register}');
+    print('Sending test email to: ${Settings.testemail}'); // Make sure you have this in your Settings
     print('Request data: ${json.encode(requestData)}');
 
     // Make the POST request
     final response = await http.post(
-      Uri.parse(Settings.register),
+      Uri.parse(Settings.testemail), // Update this to your testemail endpoint
       headers: {
         "Content-Type": "application/json",
         "X-API-TOKEN": Settings.apiToken,
@@ -35,18 +43,11 @@ void main() async {
       final data = json.decode(response.body);
       
       if (data['status'] == true) {
-        print('\n✅ Registration successful!');
+        print('\n✅ Email sent successfully!');
         print('Message: ${data['message']}');
-        if (data.containsKey('email_sent')) {
-          print('Email sent: ${data['email_sent'] ? 'Yes' : 'No'}');
-        }
       } else {
-        print('\n❌ Registration failed: ${data['message']}');
+        print('\n❌ Email sending failed: ${data['message']}');
       }
-    } else if (response.statusCode == 409) {
-      print('\n❌ Registration failed: User already exists');
-      final errorData = json.decode(response.body);
-      print('Details: ${errorData['message']}');
     } else {
       print('\n❌ HTTP Error: ${response.statusCode}');
       try {

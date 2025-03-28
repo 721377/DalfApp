@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dalfapp/pages/Mainscreen.dart';
 import 'package:dalfapp/services/GeneraOrder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -516,6 +517,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             _showSuccessDialog(
                                 context, result['order_number'].toString());
                             cartProvider.clearCart();
+                            print(result['email_sent']);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -636,7 +638,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainScreen()),
+                        (route) => false, // Clears the navigation stack
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1C304E),
