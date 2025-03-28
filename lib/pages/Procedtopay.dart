@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dalfapp/services/GeneraOrder.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +46,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     super.initState();
     _loadUserData();
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
-     _orderService = OrderService(cartProvider);
+    _orderService = OrderService(cartProvider);
 
     // Add listeners to controllers
     _fullNameController.addListener(_checkForChanges);
@@ -208,170 +210,170 @@ class _CheckoutPageState extends State<CheckoutPage> {
     );
   }
 
-Widget _buildPaymentStep() {
-  return SingleChildScrollView(
-    controller: _scrollController,
-    padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Metodo di Pagamento',
-          style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800]),
-        ),
-        const SizedBox(height: 20),
-
-        // Horizontal payment options
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              _buildPaymentOption(
-                'Carta di credito',
-                'images/Dalf_carne/creditcard.png',
-                'credit_card',
-              ),
-              _buildPaymentOption(
-                'PayPal',
-                'images/Dalf_carne/paypal.png',
-                'paypal',
-              ),
-              // Add more payment options here if needed
-            ],
-          ),
-        ),
-        const SizedBox(height: 25),
-
-        // Payment Forms
-        if (_selectedPaymentMethod == 'credit_card') _buildCreditCardForm(),
-        if (_selectedPaymentMethod == 'paypal') _buildPaypalForm(),
-      ],
-    ),
-  );
-}
-
-Widget _buildPaymentOption(String title, String iconAsset, String value) {
-  final bool isCreditCard = value == 'credit_card';
-  
-  return GestureDetector(
-    onTap: () => setState(() => _selectedPaymentMethod = value),
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      margin: const EdgeInsets.only(right: 12, bottom: 8),
-      constraints: const BoxConstraints(minWidth: 120),
-      decoration: BoxDecoration(
-        color: _selectedPaymentMethod == value
-            ? const Color(0xFFE4EBFC)
-            : Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color:_selectedPaymentMethod == value
-            ? const Color.fromARGB(255, 41, 105, 255):const Color.fromARGB(255, 233, 233, 233),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+  Widget _buildPaymentStep() {
+    return SingleChildScrollView(
+      controller: _scrollController,
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Payment method icon and title
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 38,
-                height: 38,
-                margin: const EdgeInsets.only(bottom: 8),
-                child: Image.asset(
-                  iconAsset,
-                  fit: BoxFit.contain,
-                  // color: _selectedPaymentMethod == value
-                  //     ? Colors.white
-                  //     : null,
-                ),
-              ),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: _selectedPaymentMethod == value
-                      ? Color.fromARGB(255, 145, 145, 145)
-                      : Colors.grey[800],
-                ),
-              ),
-            ],
-          ),
-          
-        ],
-      ),
-    ),
-  );
-}
-
-Widget _buildCreditCardForm() {
-  return Column(
-    children: [
-      Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTextField(
-              _cardNumberController, 'Numero Carta', Icons.credit_card, true,
-              keyboardType: TextInputType.number,
-              hintText: '1234 5678 9012 3456'),
-          const SizedBox(height: 8),
-          // Card brand logos
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Image.asset(
-                'images/Dalf_carne/visa.jpg',
-                width: 50,
-                height: 35,
-                fit: BoxFit.contain,
-              ),
-              const SizedBox(width: 8),
-              Image.asset(
-                'images/Dalf_carne/masterc.jpg',
-                width: 50,
-                height: 35,
-                fit: BoxFit.contain,
-              ),
-            ],
+          Text(
+            'Metodo di Pagamento',
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800]),
           ),
+          const SizedBox(height: 20),
+
+          // Horizontal payment options
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildPaymentOption(
+                  'Carta di credito',
+                  'images/Dalf_carne/creditcard.png',
+                  'credit_card',
+                ),
+                _buildPaymentOption(
+                  'PayPal',
+                  'images/Dalf_carne/paypal.png',
+                  'paypal',
+                ),
+                // Add more payment options here if needed
+              ],
+            ),
+          ),
+          const SizedBox(height: 25),
+
+          // Payment Forms
+          if (_selectedPaymentMethod == 'credit_card') _buildCreditCardForm(),
+          if (_selectedPaymentMethod == 'paypal') _buildPaypalForm(),
         ],
       ),
-      const SizedBox(height: 15),
-      _buildTextField(
-          _cardNameController, 'Nome sulla Carta', Icons.person_outline, true,
-          hintText: 'MARIO ROSSI'),
-      const SizedBox(height: 15),
-      Row(
-        children: [
-          Expanded(
-            child: _buildTextField(
-                _expiryDateController, 'Scadenza', Icons.calendar_today, true,
-                hintText: 'MM/AA', keyboardType: TextInputType.datetime),
+    );
+  }
+
+  Widget _buildPaymentOption(String title, String iconAsset, String value) {
+    final bool isCreditCard = value == 'credit_card';
+
+    return GestureDetector(
+      onTap: () => setState(() => _selectedPaymentMethod = value),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        margin: const EdgeInsets.only(right: 12, bottom: 8),
+        constraints: const BoxConstraints(minWidth: 120),
+        decoration: BoxDecoration(
+          color: _selectedPaymentMethod == value
+              ? const Color(0xFFE4EBFC)
+              : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: _selectedPaymentMethod == value
+                ? const Color.fromARGB(255, 41, 105, 255)
+                : const Color.fromARGB(255, 233, 233, 233),
+            width: 1,
           ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: _buildTextField(_cvvController, 'CVV', Icons.lock, true,
-                hintText: '123', keyboardType: TextInputType.number),
-          ),
-        ],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Payment method icon and title
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: Image.asset(
+                    iconAsset,
+                    fit: BoxFit.contain,
+                    // color: _selectedPaymentMethod == value
+                    //     ? Colors.white
+                    //     : null,
+                  ),
+                ),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: _selectedPaymentMethod == value
+                        ? Color.fromARGB(255, 145, 145, 145)
+                        : Colors.grey[800],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-    ],
-  );
-}
+    );
+  }
+
+  Widget _buildCreditCardForm() {
+    return Column(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildTextField(
+                _cardNumberController, 'Numero Carta', Icons.credit_card, true,
+                keyboardType: TextInputType.number,
+                hintText: '1234 5678 9012 3456'),
+            const SizedBox(height: 8),
+            // Card brand logos
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Image.asset(
+                  'images/Dalf_carne/visa.jpg',
+                  width: 50,
+                  height: 35,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(width: 8),
+                Image.asset(
+                  'images/Dalf_carne/masterc.jpg',
+                  width: 50,
+                  height: 35,
+                  fit: BoxFit.contain,
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 15),
+        _buildTextField(
+            _cardNameController, 'Nome sulla Carta', Icons.person_outline, true,
+            hintText: 'MARIO ROSSI'),
+        const SizedBox(height: 15),
+        Row(
+          children: [
+            Expanded(
+              child: _buildTextField(
+                  _expiryDateController, 'Scadenza', Icons.calendar_today, true,
+                  hintText: 'MM/AA', keyboardType: TextInputType.datetime),
+            ),
+            const SizedBox(width: 15),
+            Expanded(
+              child: _buildTextField(_cvvController, 'CVV', Icons.lock, true,
+                  hintText: '123', keyboardType: TextInputType.number),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 
   Widget _buildPaypalForm() {
     return Column(
@@ -389,11 +391,8 @@ Widget _buildCreditCardForm() {
           ),
           child: Row(
             children: [
-              Image.asset(
-              'images/Dalf_carne/paypal.png',
-              width: 30,
-              fit: BoxFit.contain),
-
+              Image.asset('images/Dalf_carne/paypal.png',
+                  width: 30, fit: BoxFit.contain),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -504,7 +503,7 @@ Widget _buildCreditCardForm() {
                         }
                       } else {
                         setState(() => _isProcessingPayment = true);
-                        
+
                         try {
                           final result = await _orderService.sendOrder(
                             paymentMethod: _selectedPaymentMethod,
@@ -514,7 +513,8 @@ Widget _buildCreditCardForm() {
                           setState(() => _isProcessingPayment = false);
 
                           if (result['success'] == true) {
-                            _showSuccessDialog(context, result['order_number'].toString());
+                            _showSuccessDialog(
+                                context, result['order_number'].toString());
                             cartProvider.clearCart();
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -522,6 +522,12 @@ Widget _buildCreditCardForm() {
                                   content: Text(
                                       'Errore: ${result['error'] ?? 'Si è verificato un errore'}')),
                             );
+                            // ignore: avoid_print
+                            String errorMessage = result['error'].toString();
+                            errorMessage
+                                .split('\n')
+                                // ignore: unnecessary_brace_in_string_interps
+                                .forEach((line) => print('\n❌${line}'));
                           }
                         } catch (e) {
                           setState(() => _isProcessingPayment = false);
@@ -529,9 +535,9 @@ Widget _buildCreditCardForm() {
                             SnackBar(
                                 content: Text(
                                     'Errore durante il pagamento: ${e.toString()}')),
-                              
                           );
-                          print( '\n❌ \nErrore durante il pagamento: ${e.toString()}');
+                          print(
+                              '\n❌ \nErrore durante il pagamento: ${e.toString()}');
                         }
                       }
                     },
@@ -702,7 +708,8 @@ Widget _buildCreditCardForm() {
         labelStyle: TextStyle(fontSize: 15, color: Colors.grey[600]),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: const Color.fromARGB(255, 216, 216, 216)!),
+          borderSide:
+              BorderSide(color: const Color.fromARGB(255, 216, 216, 216)!),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -710,7 +717,8 @@ Widget _buildCreditCardForm() {
         ),
         filled: true,
         fillColor: enabled ? Colors.white : Colors.grey[100],
-        prefixIcon: Icon(icon, color: const Color.fromARGB(255, 34, 34, 34), size: 22),
+        prefixIcon:
+            Icon(icon, color: const Color.fromARGB(255, 34, 34, 34), size: 22),
         contentPadding:
             const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
         counterText: '',
@@ -755,7 +763,7 @@ Widget _buildCreditCardForm() {
     );
   }
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
@@ -802,5 +810,4 @@ Widget _buildCreditCardForm() {
       ),
     );
   }
-
 }
